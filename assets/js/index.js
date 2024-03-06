@@ -1,6 +1,6 @@
-import { Leon, Lobo, Oso, Serpiente, Aguila } from "./clases.js";
 import { getAnimal } from "./api.js";
-
+import { Leon, Lobo, Oso, Serpiente, Aguila } from "./clases.js";
+import { mostrarDetallesAnimal } from "./modal.js";
 
 let datosAnimales = "";
 let instanciaAnimal = "";
@@ -87,7 +87,7 @@ const limpiarTagPreview = () => {
         break;
     }
     /* inserta imagen en preview */
-    limpiarTagPreview()
+    limpiarTagPreview();
     let imgElement = document.createElement("img");
     imgElement.setAttribute("src", instanciaAnimal.getImg());
     preview.appendChild(imgElement);
@@ -104,7 +104,6 @@ const limpiarTagPreview = () => {
   });
 
   /* Evento click para boton Registrar */
-
   btnRegistrar.addEventListener("click", () => {
     const animalSeleccionado = formulario.animal;
     const datosAnimalSeleccionado = datosAnimales.animales.find(
@@ -112,37 +111,66 @@ const limpiarTagPreview = () => {
     );
     if (datosAnimalSeleccionado) {
       const card = document.createElement("div");
-    card.classList.add(
-      "card",
-      "m-2",
-      "p-3",
-      "bg-light",
-      "col-12",
-      "col-md-6",
-      "col-lg-4"
-    );
-    card.innerHTML = `
-      <img src="http://127.0.0.1:5500/assets/imgs/${datosAnimalSeleccionado.imagen}" class="card-img-top" alt="${animalSeleccionado}">
-      <div class="audio-container">
-        <audio controls>
-          <source src="http://127.0.0.1:5500/assets/sounds/${datosAnimalSeleccionado.sonido}" type="audio/mpeg">
-          Tu navegador no soporta el elemento de audio.
-        </audio>
-      </div>
-    `;
-    document.getElementById("Animales").appendChild(card);
-  } else {
-    console.error(
-      `No se encontró el animal ${animalSeleccionado} en los datos.`
-    )}
-  });
-
-  document.addEventListener("click", (event) => {
-    if (event.target.classList.contains("play-sound")) {
-      const audioUrl = event.target.getAttribute("data-audio");
-      const audio = new Audio(audioUrl);
-      audio.play();
+      card.classList.add(
+        "card",
+        "m-2",
+        "p-3",
+        "bg-light",
+        "col-12",
+        "col-md-6",
+        "col-lg-4"
+      );
+      card.innerHTML = `
+        <img src="http://127.0.0.1:5500/assets/imgs/${datosAnimalSeleccionado.imagen}" class="card-img-top" alt="${animalSeleccionado}">
+        <div class="audio-container">
+          <audio controls>
+            <source src="http://127.0.0.1:5500/assets/sounds/${datosAnimalSeleccionado.sonido}" type="audio/mpeg">
+            Tu navegador no soporta el elemento de audio.
+          </audio>
+        </div>
+      `;
+      card.addEventListener("click", () => {
+        const nombreAnimal = animalSeleccionado;
+        const edadAnimal = formulario.edad;
+        const imagenAnimal = `http://127.0.0.1:5500/assets/imgs/${datosAnimalSeleccionado.imagen}`;
+        const comentariosAnimal = formulario.comentarios;
+        mostrarDetallesAnimal(
+          nombreAnimal,
+          edadAnimal,
+          imagenAnimal,
+          comentariosAnimal
+        );
+      });
+      document.getElementById("Animales").appendChild(card);
+    } else {
+      console.error(
+        `No se encontró el animal ${animalSeleccionado} en los datos.`
+      );
     }
   });
+
+  /* Modal */
+
+  document.addEventListener("click", () => {
+    inicializarModal();
+  });
+  
+function inicializarModal() {
+    document.body.addEventListener("click", function (event) {
+      if (event.target.classList.contains("card")) {
+        const animalSeleccionado = event.target.querySelector("img").alt;
+        const edadAnimal = event.target.querySelector(".edad").innerText;
+        const imagenAnimal =
+          "http://127.0.0.1:5500/assets/imgs/" + animalSeleccionado;
+        const comentariosAnimal = event.target.querySelector(".comentarios").innerText;
+        mostrarDetallesAnimal(
+          animalSeleccionado,
+          edadAnimal,
+          imagenAnimal,
+          comentariosAnimal
+        );
+      }
+    });
+  }
 
 })();
