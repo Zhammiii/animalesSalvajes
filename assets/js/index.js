@@ -1,6 +1,5 @@
 import { getAnimal } from "./api.js";
 import { Leon, Lobo, Oso, Serpiente, Aguila } from "./clases.js";
-import { mostrarDetallesAnimal } from "./modal.js";
 
 let datosAnimales = "";
 let instanciaAnimal = "";
@@ -105,21 +104,21 @@ const limpiarTagPreview = () => {
 
   /* Evento click para boton Registrar */
   btnRegistrar.addEventListener("click", () => {
-    const animalSeleccionado = formulario.animal;
+    const animalSeleccionado = animal.value; 
+    const edadAnimal = edad.value;
+    const comentariosAnimal = comentarios.value;
+
+  /* Validar si alguno de los campos está vacío*/
+    if (animalSeleccionado === "" || edadAnimal === "" || comentariosAnimal === "") {
+        alert("Debe rellenar todos los campos");
+        return;
+    }
     const datosAnimalSeleccionado = datosAnimales.animales.find(
       (animal) => animal.name === animalSeleccionado
     );
     if (datosAnimalSeleccionado) {
       const card = document.createElement("div");
-      card.classList.add(
-        "card",
-        "m-2",
-        "p-3",
-        "bg-light",
-        "col-12",
-        "col-md-6",
-        "col-lg-4"
-      );
+      card.classList.add("card","m-2", "p-3", "bg-light", "col-md-6", "col-lg-4");
       card.innerHTML = `
         <img src="http://127.0.0.1:5500/assets/imgs/${datosAnimalSeleccionado.imagen}" class="card-img-top" alt="${animalSeleccionado}">
         <div class="audio-container">
@@ -129,18 +128,6 @@ const limpiarTagPreview = () => {
           </audio>
         </div>
       `;
-      card.addEventListener("click", () => {
-        const nombreAnimal = animalSeleccionado;
-        const edadAnimal = formulario.edad;
-        const imagenAnimal = `http://127.0.0.1:5500/assets/imgs/${datosAnimalSeleccionado.imagen}`;
-        const comentariosAnimal = formulario.comentarios;
-        mostrarDetallesAnimal(
-          nombreAnimal,
-          edadAnimal,
-          imagenAnimal,
-          comentariosAnimal
-        );
-      });
       document.getElementById("Animales").appendChild(card);
     } else {
       console.error(
@@ -148,29 +135,5 @@ const limpiarTagPreview = () => {
       );
     }
   });
-
-  /* Modal */
-
-  document.addEventListener("click", () => {
-    inicializarModal();
-  });
-  
-function inicializarModal() {
-    document.body.addEventListener("click", function (event) {
-      if (event.target.classList.contains("card")) {
-        const animalSeleccionado = event.target.querySelector("img").alt;
-        const edadAnimal = event.target.querySelector(".edad").innerText;
-        const imagenAnimal =
-          "http://127.0.0.1:5500/assets/imgs/" + animalSeleccionado;
-        const comentariosAnimal = event.target.querySelector(".comentarios").innerText;
-        mostrarDetallesAnimal(
-          animalSeleccionado,
-          edadAnimal,
-          imagenAnimal,
-          comentariosAnimal
-        );
-      }
-    });
-  }
 
 })();
